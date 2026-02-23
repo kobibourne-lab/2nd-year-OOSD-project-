@@ -180,15 +180,15 @@ public static void insertUser(User user)
     {
         
 
-    //DVD newDVD = new DVD("8mile", "eminem", "DVD", "drama", 12, 4, 3);
-    //ItemCRUD.insertItem(newDVD);
+    //User newUser = new User();
+    //UserCRUD.insertUser(newUser);
 
     // UPDATE
-    //DVD updatedDVD = new DVD(1001, "Star Wars", "George.L", "DVD", "Sifi", 20, 12, 4);
-    //ItemCRUD.updateItem(updatedDVD);
+    //User updatedUser = new User(name, email, phone);
+    //USERCRUD.updateUser(updatedUser);
 
     // DELETE
-    //OrderCRUD.deleteOrder(2003);
+    //UserCRUD.deleteUser(1);
     displayUsers();
     }
     
