@@ -13,6 +13,6 @@ public static void main( String [] args )
     int sum = num1 + num2;
     // display result
     JOptionPane.showMessageDialog( null, "The sum is" + sum,
-    "Sum of Two Integers", JOptionPane.PLAIN MESSAGE );
+    "Sum of Two Integers", JOptionPane.PLAIN_MESSAGE );
     }//end main
 }
