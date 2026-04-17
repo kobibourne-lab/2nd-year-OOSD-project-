@@ -50,6 +50,27 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ItemGUI",
+      "request": "launch",
+      "mainClass": "ItemGUI",
+      "projectName": "2nd-year-OOSD-project-_945c0d2f"
+    },
+    {
+      "type": "java",
+      "name": "ItemCRUD",
+      "request": "launch",
+      "mainClass": "ItemCRUD",
+      "projectName": "2nd-year-OOSD-project-_945c0d2f"
+    },
+    {
+      "type": "java",
+      "name": "OrderGUI",
+      "request": "launch",
+      "mainClass": "OrderGUI",
+      "projectName": "2nd-year-OOSD-project-_945c0d2f"
+    },
+    {
+      "type": "java",
       "name": "MainMenu",
       "request": "launch",
       "mainClass": "MainMenu",

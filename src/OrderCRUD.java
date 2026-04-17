@@ -1,10 +1,13 @@
 
 import java.sql.Connection;
+//import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+//import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class OrderCRUD {
 
@@ -13,7 +16,7 @@ public class OrderCRUD {
     static final String PASSWORD = "Ellie.1913";
 
     // Insert an order
-    public static void insertOrder(Order order) 
+    public void insertOrder(Order order) throws SQLException
     {
         Connection connection = null;
         PreparedStatement pstat = null;
@@ -52,7 +55,7 @@ public class OrderCRUD {
     }
 
     // Update an order
-    public static void updateOrder(Order order) 
+    public void updateOrder(Order order) throws SQLException
     {
         Connection connection = null;
         PreparedStatement pstat = null;
@@ -92,7 +95,7 @@ public class OrderCRUD {
     }
 
     // Delete an order
-    public static void deleteOrder(int orderID) 
+    public void deleteOrder(int orderID) throws SQLException
     {
         Connection connection = null;
         PreparedStatement pstat = null;
@@ -126,11 +129,17 @@ public class OrderCRUD {
     }
 
     // Display all orders
-    public static void displayOrders() 
+    public List<Order> displayOrders() throws SQLException
     {
+        List<Order> orders = new ArrayList<>();
         Connection connection = null;
         PreparedStatement pstat = null;
         ResultSet resultSet = null;
+        int userId;
+        int itemId;
+        String orderType;
+        String orderDate; //never used date idk 
+        String returnDate;
 
         try 
             {
@@ -138,7 +147,21 @@ public class OrderCRUD {
                 pstat = connection.prepareStatement("SELECT * FROM orders");
                 resultSet = pstat.executeQuery();
 
-                ResultSetMetaData metaData = resultSet.getMetaData();
+                
+                while(resultSet.next())
+                    {
+                        userId = resultSet.getInt("userID");
+                        itemId = resultSet.getInt("itemID");
+                        orderType = resultSet.getString("orderType");
+                        orderDate = resultSet.getString("orderDate");
+                        returnDate = resultSet.getString("returnDate");
+
+                        Order order = new Order(userId, itemId, orderType, orderDate, returnDate);
+                        orders.add(order);
+                    }
+                    
+                
+                /*ResultSetMetaData metaData = resultSet.getMetaData();
                 int numberOfColumns = metaData.getColumnCount();
 
                 // Print column headers
@@ -156,7 +179,7 @@ public class OrderCRUD {
                                 System.out.print(resultSet.getObject(i) + "\t");
                             }
                         System.out.println();
-                    }
+                    }*/
 
             } 
         catch (SQLException e) 
@@ -176,22 +199,27 @@ public class OrderCRUD {
                         e.printStackTrace();
                     }
             }
+            return orders;
     }
 
     // Main method for testing
-    public static void main(String[] args) 
+    /*public static void main(String[] args) throws Exception
     {
-        
+        OrderCRUD orderCRUD = new OrderCRUD();
 
-    Order newOrder = new Order(3, 1003, "BORROW", "2026-02-22", "2026-03-22");
-    OrderCRUD.insertOrder(newOrder);
+        // INSERT
+        Order newOrder = new Order(3, 1003, "BORROW", "2026-02-22", "2026-03-22");
+        orderCRUD.insertOrder(newOrder);
 
-    // UPDATE
-    Order updatedOrder = new Order(2002, 2, 1001, "RETURN", "2026-02-22", "2026-02-25");
-    OrderCRUD.updateOrder(updatedOrder);
+        // UPDATE
+        Order updatedOrder = new Order(2002, 2, 1001, "RETURN", "2026-02-22", "2026-02-25");
+        orderCRUD.updateOrder(updatedOrder);
 
-    // DELETE
-    //OrderCRUD.deleteOrder(2003);
-    displayOrders();
-    }
+        // DELETE
+        // orderCRUD.deleteOrder(2003);
+
+        // DISPLAY
+        orderCRUD.displayOrders();
+    }*/
+
 }

@@ -2,7 +2,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-//import java.sql.ResultSetMetaData;
+//import java.sql.ResultSetMetaData; need to add throw for every throws?
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +143,7 @@ public void insertUser(User user) throws SQLException
                 pstat = connection.prepareStatement("SELECT * FROM users");
                 resultSet = pstat.executeQuery();
 
-                while (resultSet.next())
+                while(resultSet.next())
                 {
                     id = resultSet.getInt("userID");
                     name = resultSet.getString("name");

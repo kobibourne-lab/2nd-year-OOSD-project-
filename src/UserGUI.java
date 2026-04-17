@@ -172,6 +172,12 @@ public class UserGUI extends JFrame
                             JOptionPane.showMessageDialog(null, "Fill all fields"); //print
                             return; // back to gui screen
                         }
+                        
+                    if (!email.contains("@")) //if email does not contain @ enter if
+                        {
+                            JOptionPane.showMessageDialog(null, "Email must contain @");
+                            return;
+                        }
 
                     try 
                         {

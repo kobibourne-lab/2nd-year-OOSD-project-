@@ -39,10 +39,10 @@ public class MainMenu extends JFrame //window
         {
             public void actionPerformed(ActionEvent e) 
             {
-                JOptionPane.showMessageDialog(null, "Go to Item GUI");
-                //ItemGUI gui = new ItemGUI();
-                //gui.setVisible(true); //makes + shows window
-                //dispose(); //closes menu , item gui opens
+                //JOptionPane.showMessageDialog(null, "Go to Item GUI");
+                ItemGUI gui = new ItemGUI();
+                gui.setVisible(true); //makes + shows window
+                dispose(); //closes menu , item gui opens
             }
         });
 
@@ -52,7 +52,7 @@ public class MainMenu extends JFrame //window
             {
                 UserGUI gui = new UserGUI();
                 gui.setVisible(true); //makes + shows window
-                dispose(); //closes menu , item gui opens
+                dispose(); //closes menu , user gui opens
                 //JOptionPane.showMessageDialog(null, "Go to User GUI");
             }
         });
@@ -61,8 +61,10 @@ public class MainMenu extends JFrame //window
         {
             public void actionPerformed(ActionEvent e) 
             {
-                
-                JOptionPane.showMessageDialog(null, "Go to Order GUI");
+                OrderGUI gui = new OrderGUI();
+                gui.setVisible(true); //makes + shows window
+                dispose(); //closes menu , order gui opens
+                //JOptionPane.showMessageDialog(null, "Go to Order GUI");
             }
         });
 

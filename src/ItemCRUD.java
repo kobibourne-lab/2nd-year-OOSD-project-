@@ -2,8 +2,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+//import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ItemCRUD 
 {
@@ -12,7 +14,7 @@ public class ItemCRUD
     static final String PASSWORD = "Ellie.1913";
 
 
-public static void insertItem(Item item)
+public void insertItem(Item item) throws Exception
     {
         Connection connection = null;
         PreparedStatement pstat = null;
@@ -53,7 +55,7 @@ public static void insertItem(Item item)
     }
 
 
-    public static void updateItem(Item item)
+    public void updateItem(Item item) throws Exception
     {
         Connection connection = null;
         PreparedStatement pstat = null;
@@ -98,7 +100,7 @@ public static void insertItem(Item item)
     }
 
      // Delete an item
-    public static void deleteItem(int itemID) 
+    public void deleteItem(int itemID) throws Exception
     {
         Connection connection = null;
         PreparedStatement pstat = null;
@@ -131,37 +133,71 @@ public static void insertItem(Item item)
         }
     }
 
-        public static void displayItems() 
+        public List<Item> displayItems() throws Exception
     {
+        List<Item> items = new ArrayList<>(); //list to store items from db 
         Connection connection = null;
         PreparedStatement pstat = null;
         ResultSet resultSet = null;
+        int itemID;
+        String title;
+        String creator;
+        String type;
+        String genre;
+        double price;
+        double rental_price;
+        int stock;
+        Item item;
+
 
         try 
             {
                 connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
                 pstat = connection.prepareStatement("SELECT * FROM items");
                 resultSet = pstat.executeQuery();
-
-                ResultSetMetaData metaData = resultSet.getMetaData();
-                int numberOfColumns = metaData.getColumnCount();
-
-                // Print column headers
-                for (int i = 1; i <= numberOfColumns; i++) 
+                //title, creator, type, genre, price, rental_price, stock 
+                while(resultSet.next())
                     {
-                        System.out.print(metaData.getColumnName(i) + "\t");
-                    }
-                System.out.println();
+                        itemID = resultSet.getInt("itemID");
+                        title = resultSet.getString("title");
+                        creator = resultSet.getString("creator");
+                        type = resultSet.getString("type");
+                        genre = resultSet.getString("genre");
+                        price = resultSet.getDouble("price");
+                        rental_price = resultSet.getDouble("rental_price");
+                        stock = resultSet.getInt("stock");
 
-                // Print rows
-                while (resultSet.next()) 
-                    {
-                        for (int i = 1; i <= numberOfColumns; i++) 
+
+                        //pick object to make using type 
+                        if(type.equalsIgnoreCase("Book"))
                             {
-                                System.out.print(resultSet.getObject(i) + "\t");
+                                item = new Book(itemID, title, creator, genre, price, rental_price, stock); //got rid of type as its set in con
                             }
-                        System.out.println();
+
+                        else if(type.equalsIgnoreCase("DVD"))
+                            {
+                                item = new DVD(itemID, title, creator, genre, price, rental_price, stock);
+                            }  
+                            
+                        else if(type.equalsIgnoreCase("Game"))
+                            {
+                                item = new Game(itemID, title, creator, genre, price, rental_price, stock);
+                            }
+
+                        else
+                            {
+                                item = null; //only valid types added to list 
+                            }
+
+                        if (item != null)
+                            {
+                                items.add(item);
+                            }
                     }
+
+            
+
+                
 
             } 
         catch (SQLException e) 
@@ -181,6 +217,7 @@ public static void insertItem(Item item)
                         e.printStackTrace();
                     }
             }
+            return items;
     }
 
     // Main method for testing
@@ -197,7 +234,7 @@ public static void insertItem(Item item)
 
     // DELETE
     //OrderCRUD.deleteOrder(2003);
-    displayItems();
+    //displayItems();
     }
 }
 
