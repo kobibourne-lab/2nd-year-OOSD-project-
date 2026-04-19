@@ -1,3 +1,7 @@
+//STUDENT NAME: KOBI BOURNE
+//STUDENT NUM: C00249676
+//CLASS: CRUD FOR ITEM
+//DATE: 28/2/2026
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;

@@ -1,3 +1,7 @@
+//STUDENT NAME: KOBI BOURNE
+//STUDENT NUM: C00249676
+//CLASS: OBJECT CLASS - ITEM  
+//DATE: 28/2/2026
 public abstract class Item 
 {
  

@@ -144,7 +144,7 @@ public class OrderGUI extends JFrame
                 } 
             catch (Exception e) 
                 {
-                    JOptionPane.showMessageDialog(null, "Error loading data");
+                    JOptionPane.showMessageDialog(null, e.getMessage());
                 }
         }
 
@@ -286,12 +286,12 @@ public class OrderGUI extends JFrame
                             int orderID = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); //get id 
                             
                             // Confirmation dialog
-                            int confirm = JOptionPane.showConfirmDialog(
+                                int confirm = JOptionPane.showConfirmDialog(
                                 null, 
                                 "Are you sure you want to delete this order?", //message
                                 "Confirm Delete", //title 
                                 JOptionPane.YES_NO_OPTION //buttons
-                            );
+                                );
                             
                             if (confirm == JOptionPane.YES_OPTION) //if yes 
                                 {

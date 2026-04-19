@@ -1,30 +1,38 @@
-import javax.swing.*; 
-import javax.swing.table.DefaultTableModel; 
-import java.awt.*; 
-import java.awt.event.*; 
-import java.util.List; 
+//STUDENT NAME: KOBI BOURNE
+//STUDENT NUM: C00249676
+//CLASS: GUI FOR ITEMS 
+//DATE: 5/4/2026
+import javax.swing.*; //imports swing things
+import javax.swing.table.DefaultTableModel;  //table
+import java.awt.*; //layouts
+import java.awt.event.*; // event handling
+import java.util.List; //list
 
 public class ItemGUI extends JFrame 
 {
+    // Component vars declarations
     private JLabel titleLabel, creatorLabel, typeLabel, genreLabel, priceLabel, rentalPriceLabel, stockLabel; 
-    private JTextField titleField, creatorField, typeField, genreField, priceField, rentalPriceField, stockField; 
+    private JTextField titleField, creatorField, genreField, priceField, rentalPriceField, stockField; 
+    private JComboBox<String> typeCombo; //dropdown for type much easier then textfield with validation
     private JTable itemTable;
     private DefaultTableModel tableModel;
     private JButton addButton, updateButton, deleteButton, backButton, clearButton;
-    private ItemCRUD itemCRUD; 
+    private ItemCRUD itemCRUD;  //object for crud
 
-    public ItemGUI() 
+    public ItemGUI() // Constructor
         {
-            super("Item Management");  
-            setSize(700, 500); 
-            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); 
-            setLayout(new BorderLayout());
+            //setup frame
+            super("Item Management");  //set title 
+            setSize(700, 500); // set window size 
+            setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close this window
+            setLayout(new BorderLayout()); //set layout
 
-            itemCRUD = new ItemCRUD(); 
+            itemCRUD = new ItemCRUD(); // Initialize crud object
 
-            JPanel formPanel = new JPanel(); 
-            formPanel.setLayout(new GridLayout(7, 2, 5, 5)); 
+            JPanel formPanel = new JPanel(); // form panel and layout
+            formPanel.setLayout(new GridLayout(7, 2, 5, 5)); // rows cols and spacing 
 
+            //labels
             titleLabel = new JLabel("Title:"); 
             creatorLabel = new JLabel("Creator:");
             typeLabel = new JLabel("Type:");
@@ -33,20 +41,22 @@ public class ItemGUI extends JFrame
             rentalPriceLabel = new JLabel("Rental Price:");
             stockLabel = new JLabel("Stock:");
 
+            //text fields
             titleField = new JTextField(); 
             creatorField = new JTextField();
-            typeField = new JTextField();
+            typeCombo = new JComboBox<>(new String[]{"Book", "DVD", "Game"});// book = index 0 etc
             genreField = new JTextField();
             priceField = new JTextField();
             rentalPriceField = new JTextField();
             stockField = new JTextField();
 
+            //add labels + fields to form
             formPanel.add(titleLabel);
             formPanel.add(titleField);
             formPanel.add(creatorLabel);
             formPanel.add(creatorField);
             formPanel.add(typeLabel);
-            formPanel.add(typeField);
+            formPanel.add(typeCombo);
             formPanel.add(genreLabel);
             formPanel.add(genreField);
             formPanel.add(priceLabel);
@@ -56,23 +66,26 @@ public class ItemGUI extends JFrame
             formPanel.add(stockLabel);
             formPanel.add(stockField);
 
-            JPanel buttonPanel = new JPanel(); 
+            JPanel buttonPanel = new JPanel(); //button panel 
 
+            //make buttons
             addButton = new JButton("Add");
             updateButton = new JButton("Update");
             deleteButton = new JButton("Delete");
             backButton = new JButton("Back");
             clearButton = new JButton("Clear");
 
+            //add buttons to panel
             buttonPanel.add(addButton);
             buttonPanel.add(updateButton);
             buttonPanel.add(deleteButton);
             buttonPanel.add(backButton);
             buttonPanel.add(clearButton);
 
-            tableModel = new DefaultTableModel(); 
-            tableModel.addColumn("Item ID"); 
-            tableModel.addColumn("Title");
+            // table setup
+            tableModel = new DefaultTableModel(); // makes table
+            tableModel.addColumn("Item ID"); //id col 
+            tableModel.addColumn("Title"); //title col 
             tableModel.addColumn("Creator");
             tableModel.addColumn("Type");
             tableModel.addColumn("Genre");
@@ -80,13 +93,15 @@ public class ItemGUI extends JFrame
             tableModel.addColumn("Rental Price");
             tableModel.addColumn("Stock");
 
-            itemTable = new JTable(tableModel); 
-            JScrollPane scrollPane = new JScrollPane(itemTable);  
+            itemTable = new JTable(tableModel); //make table
+            JScrollPane scrollPane = new JScrollPane(itemTable);  //make scrollable
 
-            add(formPanel, BorderLayout.NORTH); 
-            add(scrollPane, BorderLayout.CENTER); 
-            add(buttonPanel, BorderLayout.SOUTH);
+            // add panels to frame
+            add(formPanel, BorderLayout.NORTH); //add form to top 
+            add(scrollPane, BorderLayout.CENTER); //add table in center 
+            add(buttonPanel, BorderLayout.SOUTH); // add button at bottom
 
+            // make + reg event handlers            
             ClickHandler clickHandler = new ClickHandler();
             AddHandler addHandler = new AddHandler();
             UpHandler upHandler = new UpHandler();
@@ -94,6 +109,7 @@ public class ItemGUI extends JFrame
             BackHandler backHandler = new BackHandler();
             ClearHandler clearHandler = new ClearHandler();
             
+            // Reg handlers
             itemTable.addMouseListener(clickHandler);
             addButton.addActionListener(addHandler);
             updateButton.addActionListener(upHandler);
@@ -101,37 +117,38 @@ public class ItemGUI extends JFrame
             backButton.addActionListener(backHandler);
             clearButton.addActionListener(clearHandler);
             
-            displayItemTable(); 
+            displayItemTable(); //load data into table 
 
-            setLocationRelativeTo(null); 
-            setVisible(true);
+            setLocationRelativeTo(null); //center window 
+            setVisible(true); // show window 
 
-        } 
+        } //end con  
 
-        private void clearFields()
+        //clears data
+        private void clearFields()//only used in this as code was v long
         {
             titleField.setText("");
             creatorField.setText("");
-            typeField.setText("");
+            typeCombo.setSelectedIndex(0); //resets to default dropdown option , book 
             genreField.setText("");
             priceField.setText("");
             rentalPriceField.setText("");
             stockField.setText("");
         }
 
-    public void displayItemTable() 
+    public void displayItemTable() // load orders from db into table 
         {
             try 
                 {
-                    tableModel.setRowCount(0); 
-                    List<Item> items = itemCRUD.displayItems(); 
+                    tableModel.setRowCount(0); //clear
+                    List<Item> items = itemCRUD.displayItems(); //get items from db
 
-                    for (int i = 0; i < items.size(); i++) 
+                    for (int i = 0; i < items.size(); i++) //loop thru items
                         {
-                            Item item = items.get(i); 
-                            tableModel.addRow(new Object[] 
+                            Item item = items.get(i); //get each one
+                            tableModel.addRow(new Object[] //add rows 
                             {
-                                item.getItemID(), 
+                                item.getItemID(),  //col values
                                 item.getTitle(),
                                 item.getCreator(),
                                 item.getType(),
@@ -148,17 +165,20 @@ public class ItemGUI extends JFrame
                 }
         }
 
+    // event handling classes
+    //Table Click Handler
     private class ClickHandler extends MouseAdapter 
         {
             @Override
             public void mouseClicked(MouseEvent event) 
                 {
-                    int row = itemTable.getSelectedRow(); 
-                    if (row != -1)  
+                    int row = itemTable.getSelectedRow(); //get row 
+                    if (row != -1)  // check row valid 
                         {
+                            //sets fields 
                             titleField.setText(tableModel.getValueAt(row, 1).toString());
                             creatorField.setText(tableModel.getValueAt(row, 2).toString());
-                            typeField.setText(tableModel.getValueAt(row, 3).toString());
+                            typeCombo.setSelectedItem(tableModel.getValueAt(row, 3).toString()); //get val from table col 3, convert to string , sets dropdown 
                             genreField.setText(tableModel.getValueAt(row, 4).toString());
                             priceField.setText(tableModel.getValueAt(row, 5).toString());
                             rentalPriceField.setText(tableModel.getValueAt(row, 6).toString());
@@ -167,36 +187,33 @@ public class ItemGUI extends JFrame
                 }
         } 
 
+    //Add Button Handler
     private class AddHandler implements ActionListener 
         {
             @Override
             public void actionPerformed(ActionEvent event) 
                 {
+                    //get inputs
                     String title = titleField.getText(); 
                     String creator = creatorField.getText();
-                    String type = typeField.getText();
+                    String type = typeCombo.getSelectedItem().toString(); //get selected type from dropdown and converts to string 
                     String genre = genreField.getText();
                     String price = priceField.getText();
                     String rental = rentalPriceField.getText();
                     String stock = stockField.getText();
 
+                    //inpiut validation - if any field empty enter if
                     if (title.isEmpty() || creator.isEmpty() || type.isEmpty() || genre.isEmpty() || price.isEmpty() || rental.isEmpty() || stock.isEmpty()) 
                         {
                             JOptionPane.showMessageDialog(null, "Fill all fields"); 
                             return; 
                         }
 
-                    if (!type.equalsIgnoreCase("Book") && !type.equalsIgnoreCase("DVD") && !type.equalsIgnoreCase("Game")) //if email does not contain @ enter if
-                        {
-                            JOptionPane.showMessageDialog(null, "Type must be - Book, Game, or DVD");
-                            return;
-                        }
-
                     try 
                         {
-                            double priceVal = Double.parseDouble(price);
+                            double priceVal = Double.parseDouble(price); //convert to double 
                             double rentalVal = Double.parseDouble(rental);
-                            int stockVal = Integer.parseInt(stock);
+                            int stockVal = Integer.parseInt(stock); // convert to int 
 
                             Item item;
 
@@ -208,21 +225,17 @@ public class ItemGUI extends JFrame
                                 {
                                     item = new DVD(title, creator, genre, priceVal, rentalVal, stockVal);
                                 }
-                            else if (type.equalsIgnoreCase("Game"))
+                            else  //(type.equalsIgnoreCase("Game"))
                                 {
                                     item = new Game(title, creator, genre, priceVal, rentalVal, stockVal);
                                 }
-                            else
-                                {
-                                    JOptionPane.showMessageDialog(null, "Type must be Book, DVD or Game");
-                                    return;
-                                }
+                           
 
-                            itemCRUD.insertItem(item);
-                            displayItemTable();
+                            itemCRUD.insertItem(item); //add to db 
+                            displayItemTable(); // relaod table 
                             JOptionPane.showMessageDialog(null, "Item Added");
                             
-                            clearFields();
+                            clearFields(); // clear fields 
                         } 
                     catch (Exception err) 
                         {
@@ -249,7 +262,7 @@ public class ItemGUI extends JFrame
                             int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); 
                             String title = titleField.getText();
                             String creator = creatorField.getText();
-                            String type = typeField.getText();
+                            String type = typeCombo.getSelectedItem().toString();
                             String genre = genreField.getText();
                             double priceVal = Double.parseDouble(priceField.getText());
                             double rentalVal = Double.parseDouble(rentalPriceField.getText());
@@ -257,29 +270,25 @@ public class ItemGUI extends JFrame
 
                             Item item;
 
-                            if (type.equalsIgnoreCase("Book"))
+                            if (type.equalsIgnoreCase("Book")) // if type = book 
                                 {
+                                    //make new item = book 
                                     item = new Book(id, title, creator, genre, priceVal, rentalVal, stockVal);
                                 }
-                            else if (type.equalsIgnoreCase("DVD"))
+                            else if (type.equalsIgnoreCase("DVD")) // if type = dvd
                                 {
                                     item = new DVD(id, title, creator, genre, priceVal, rentalVal, stockVal);
                                 }
-                            else if (type.equalsIgnoreCase("Game"))
+                            else //(type.equalsIgnoreCase("Game")) // if type = game 
                                 {
                                     item = new Game(id, title, creator, genre, priceVal, rentalVal, stockVal);
                                 }
-                            else
-                                {
-                                    JOptionPane.showMessageDialog(null, "Type must be Book, DVD or Game");
-                                    return;
-                                }
 
-                            itemCRUD.updateItem(item);
-                            displayItemTable();
+                            itemCRUD.updateItem(item);//add to db 
+                            displayItemTable();//reload table 
                             JOptionPane.showMessageDialog(null, "Item Updated");
                             
-                            clearFields();
+                            clearFields();//clear 
                         } 
                     catch (Exception err) 
                         {
@@ -288,6 +297,7 @@ public class ItemGUI extends JFrame
                 }
         } 
 
+    //Delete Button Handler class 
     private class DelHandler implements ActionListener 
         {
             @Override
@@ -295,21 +305,30 @@ public class ItemGUI extends JFrame
                 {
                     try 
                         {
-                            int row = itemTable.getSelectedRow(); 
+                            int row = itemTable.getSelectedRow(); //selected row 
 
-                            if (row == -1) 
+                            if (row == -1) //if no row selected 
                                 {
-                                    JOptionPane.showMessageDialog(null, "Select item"); 
-                                    return; 
+                                    JOptionPane.showMessageDialog(null, "Select item"); //print
+                                    return;  //back to selecting
                                 }
 
-                            int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); 
+                            int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); //get id 
 
-                            itemCRUD.deleteItem(id);
-                            displayItemTable();
-                            JOptionPane.showMessageDialog(null, "Item Deleted");
-                            
-                            clearFields();
+                            // Confirm deletion
+                                int confirm = JOptionPane.showConfirmDialog(null, 
+                                "Are you sure you want to delete this order?", //message
+                                "Confirm Delete", //title 
+                                JOptionPane.YES_NO_OPTION //buttons
+                                );
+
+                            if (confirm == JOptionPane.YES_OPTION) //if yes 
+                                {    
+                                    itemCRUD.deleteItem(id);
+                                    displayItemTable();
+                                    JOptionPane.showMessageDialog(null, "Item Deleted");
+                                    clearFields();
+                                }
                         } 
                     catch (Exception err) 
                         {
@@ -318,12 +337,13 @@ public class ItemGUI extends JFrame
                 }
         } 
 
+    //back button handler 
     private class BackHandler implements ActionListener 
         {
             @Override
             public void actionPerformed(ActionEvent event) 
                 {
-                    MainMenu menu = new MainMenu();
+                    MainMenu menu = new MainMenu(); 
                     menu.setVisible(true);
                     dispose();
                 }
@@ -334,15 +354,16 @@ public class ItemGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent event) 
             {
-                clearFields();
+                clearFields(); 
 
                 itemTable.clearSelection();
             }
         }
 
+    // main method - run gui from this class
     public static void main(String[] args) 
         {
-            new ItemGUI(); 
+            new ItemGUI(); //run gui 
         }
 
 }

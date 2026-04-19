@@ -1,3 +1,7 @@
+//STUDENT NAME: KOBI BOURNE
+//STUDENT NUM: C00249676
+//CLASS: MAIN MENU GUI 
+//DATE: 5/4/2026
 import javax.swing.*; //for buttons frames and labels
 import java.awt.*; // for layouts - grid , flow
 import java.awt.event.*; // for actionListener 
@@ -13,7 +17,7 @@ public class MainMenu extends JFrame //window
     public MainMenu() //constructor
     {
         //window details - text shown, size of window, layout
-        setTitle("Library System Menu");
+        super("Library System Menu");
         setSize(300, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exit when click the x 
         setLayout(new GridLayout(3, 1)); // used instead of flow so they would stack
@@ -34,19 +38,34 @@ public class MainMenu extends JFrame //window
         add(orderButton);
         //add(exitButton); - redudant with close on click of x 
 
-        // Event handling
-        itemButton.addActionListener(new ActionListener() 
+        // make + reg event handlers
+        ItemHandler itemHandler = new ItemHandler();
+        UserHandler userHandler = new UserHandler();
+        OrderHandler orderHandler = new OrderHandler();
+
+        // Reg handlers
+        itemButton.addActionListener(itemHandler);
+        userButton.addActionListener(userHandler);
+        orderButton.addActionListener(orderHandler);
+        
+    } //end con
+
+
+     // Event handling
+     //item button
+        private class ItemHandler implements ActionListener 
         {
+            @Override
             public void actionPerformed(ActionEvent e) 
             {
-                //JOptionPane.showMessageDialog(null, "Go to Item GUI");
                 ItemGUI gui = new ItemGUI();
                 gui.setVisible(true); //makes + shows window
                 dispose(); //closes menu , item gui opens
+                //JOptionPane.showMessageDialog(null, "Go to Item GUI");
             }
-        });
+        }
 
-        userButton.addActionListener(new ActionListener() 
+        private class UserHandler implements ActionListener 
         {
             public void actionPerformed(ActionEvent e) 
             {
@@ -55,9 +74,10 @@ public class MainMenu extends JFrame //window
                 dispose(); //closes menu , user gui opens
                 //JOptionPane.showMessageDialog(null, "Go to User GUI");
             }
-        });
+        }
 
-        orderButton.addActionListener(new ActionListener() 
+         //Order Button 
+        private class OrderHandler implements ActionListener
         {
             public void actionPerformed(ActionEvent e) 
             {
@@ -66,7 +86,7 @@ public class MainMenu extends JFrame //window
                 dispose(); //closes menu , order gui opens
                 //JOptionPane.showMessageDialog(null, "Go to Order GUI");
             }
-        });
+        }
 
          /*exitButton.addActionListener(new ActionListener() 
         {
@@ -75,9 +95,6 @@ public class MainMenu extends JFrame //window
                 System.exit(0); // 
             }
         });*/
-        
-    }
-
     
 
     public static void main(String[] args) //put here while coding for testing, might make its own class 
