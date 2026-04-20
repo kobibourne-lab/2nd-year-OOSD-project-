@@ -89,7 +89,7 @@ public class OrderGUI extends JFrame
             tableModel.addColumn("Return Date");
 
             orderTable = new JTable(tableModel); //make table
-            JScrollPane scrollPane = new JScrollPane(orderTable);  //make scrollable 
+            JScrollPane scrollPane = new JScrollPane(orderTable);  //make scrollable if needed 
 
             // add panels to frame
             add(formPanel, BorderLayout.NORTH); // add form to top 
@@ -159,7 +159,7 @@ public class OrderGUI extends JFrame
                             itemIDField.setText(tableModel.getValueAt(row, 2).toString());
                             orderTypeField.setText(tableModel.getValueAt(row, 3).toString());
                             orderDateField.setText(tableModel.getValueAt(row, 4).toString());
-                            //returnDateField.setText(tableModel.getValueAt(row, 5).toString());
+                            //returnDateField.setText(tableModel.getValueAt(row, 5).toString()); - throws error if empty 
                             returnDateField.setText(String.valueOf(tableModel.getValueAt(row, 5)));
                             
                         }
@@ -180,7 +180,7 @@ public class OrderGUI extends JFrame
                     String returnDate = returnDateField.getText();
 
                     // input validation
-                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty()) //if any empty 
+                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty()) //if any empty, except return date 
                         {
                             JOptionPane.showMessageDialog(null, "Fill all fields"); //print
                             return; // back to gui screen
@@ -224,7 +224,7 @@ public class OrderGUI extends JFrame
                     String returnDate = returnDateField.getText();
                    
                     // input validation
-                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty()) //if any empty 
+                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty()) //if any empty, except return date, for buy or tbd returns 
                         {
                             JOptionPane.showMessageDialog(null, "Fill all fields"); //print
                             return; // back to gui screen

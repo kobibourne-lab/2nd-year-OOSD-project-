@@ -142,13 +142,17 @@ public class OrderCRUD {
         int userId;
         int itemId;
         String orderType;
-        String orderDate; //never used date idk 
+        String orderDate; //changed from date type 
         String returnDate;
 
         try 
             {
                 connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
-                pstat = connection.prepareStatement("SELECT * FROM orders");
+                pstat = connection.prepareStatement(
+                    "SELECT orders.orderID, users.userID, items.itemID, orders.orderType, orders.orderDate, orders.returnDate " +
+                    "FROM orders " +
+                    "INNER JOIN users ON orders.userID = users.userID " + 
+                    "INNER JOIN items ON orders.itemID = items.itemID;");
                 resultSet = pstat.executeQuery();
 
                 
