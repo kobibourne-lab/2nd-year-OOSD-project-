@@ -27,7 +27,9 @@ public class OrderGUI extends JFrame
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close this window 
             setLayout(new BorderLayout()); //set layout
 
-        
+            ImageIcon icon = new ImageIcon(getClass().getResource("logo.png"));
+            setIconImage(icon.getImage());
+
             orderCRUD = new OrderCRUD(); // Initialize crud object
 
             
@@ -113,11 +115,8 @@ public class OrderGUI extends JFrame
             clearButton.addActionListener(clearHandler);
             
             displayOrderTable(); //load data into table 
-
-            // show frame
             setLocationRelativeTo(null); // center window 
             setVisible(true); //shows
-
         } // end constructor
 
     // load orders from db into table 
@@ -132,13 +131,9 @@ public class OrderGUI extends JFrame
                         {
                             Order order = orders.get(i); //gets each one
                             tableModel.addRow(new Object[]  // add rows
-                            {
-                                order.getOrderID(), //col val
-                                order.getUserID(),
-                                order.getItemID(),
-                                order.getOrderType(),
-                                order.getOrderDate(),
-                                order.getReturnDate()
+                            {   //col val
+                                order.getOrderID(), order.getUserID(), order.getItemID(),
+                                order.getOrderType(), order.getOrderDate(), order.getReturnDate()
                             });
                         }
                 } 
@@ -164,7 +159,9 @@ public class OrderGUI extends JFrame
                             itemIDField.setText(tableModel.getValueAt(row, 2).toString());
                             orderTypeField.setText(tableModel.getValueAt(row, 3).toString());
                             orderDateField.setText(tableModel.getValueAt(row, 4).toString());
-                            returnDateField.setText(tableModel.getValueAt(row, 5).toString());
+                            //returnDateField.setText(tableModel.getValueAt(row, 5).toString());
+                            returnDateField.setText(String.valueOf(tableModel.getValueAt(row, 5)));
+                            
                         }
                 }
         } // end class
@@ -183,7 +180,7 @@ public class OrderGUI extends JFrame
                     String returnDate = returnDateField.getText();
 
                     // input validation
-                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty() || returnDate.isEmpty()) //if any empty 
+                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty()) //if any empty 
                         {
                             JOptionPane.showMessageDialog(null, "Fill all fields"); //print
                             return; // back to gui screen
@@ -193,8 +190,8 @@ public class OrderGUI extends JFrame
                         {
                             int userIDInt = Integer.parseInt(userID); //convert to int
                             int itemIDInt = Integer.parseInt(itemID); //convert to int
-                            
                             Order order = new Order(userIDInt, itemIDInt, orderType, orderDate, returnDate); //create order object
+                            
                             orderCRUD.insertOrder(order); // add to db
                             displayOrderTable(); //load table again
                             JOptionPane.showMessageDialog(null, "Order Added"); //print if works 
@@ -206,10 +203,7 @@ public class OrderGUI extends JFrame
                             orderDateField.setText("");
                             returnDateField.setText("");
                         } 
-                    catch (NumberFormatException err)
-                        {
-                            JOptionPane.showMessageDialog(null, "User ID and Item ID must be numbers");
-                        }
+                    
                     catch (Exception err) 
                         {
                             JOptionPane.showMessageDialog(null, "Error: " + err.getMessage());
@@ -223,6 +217,18 @@ public class OrderGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent event) 
                 {
+                    String userID = userIDField.getText();
+                    String itemID = itemIDField.getText();
+                    String orderType = orderTypeField.getText();
+                    String orderDate = orderDateField.getText();
+                    String returnDate = returnDateField.getText();
+                   
+                    // input validation
+                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty()) //if any empty 
+                        {
+                            JOptionPane.showMessageDialog(null, "Fill all fields"); //print
+                            return; // back to gui screen
+                        }
                     try 
                         {
                             int row = orderTable.getSelectedRow(); //sel row 
@@ -235,16 +241,10 @@ public class OrderGUI extends JFrame
                             
                             //get order data 
                             int orderID = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); 
-                            String userID = userIDField.getText();
-                            String itemID = itemIDField.getText();
-                            String orderType = orderTypeField.getText();
-                            String orderDate = orderDateField.getText();
-                            String returnDate = returnDateField.getText();
-
                             int userIDInt = Integer.parseInt(userID); //convert to int
                             int itemIDInt = Integer.parseInt(itemID); //convert to int
-
                             Order order = new Order(orderID, userIDInt, itemIDInt, orderType, orderDate, returnDate); //make updated order
+                            
                             orderCRUD.updateOrder(order); //update db using crud 
                             displayOrderTable(); //reload table
                             JOptionPane.showMessageDialog(null, "Order Updated"); // if works print 
@@ -256,13 +256,9 @@ public class OrderGUI extends JFrame
                             orderDateField.setText("");
                             returnDateField.setText("");
                         } 
-                    catch (NumberFormatException err)
-                        {
-                            JOptionPane.showMessageDialog(null, "User ID and Item ID must be numbers");
-                        }
                     catch (Exception err) 
                         {
-                            JOptionPane.showMessageDialog(null, "Error: " + err.getMessage()); //if error print 
+                            JOptionPane.showMessageDialog(null, err.getMessage()); //if error print 
                         }
                 }
         } // end class 
@@ -286,8 +282,7 @@ public class OrderGUI extends JFrame
                             int orderID = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); //get id 
                             
                             // Confirmation dialog
-                                int confirm = JOptionPane.showConfirmDialog(
-                                null, 
+                                int confirm = JOptionPane.showConfirmDialog(null, 
                                 "Are you sure you want to delete this order?", //message
                                 "Confirm Delete", //title 
                                 JOptionPane.YES_NO_OPTION //buttons
@@ -309,7 +304,7 @@ public class OrderGUI extends JFrame
                         } 
                     catch (Exception err) 
                         {
-                            JOptionPane.showMessageDialog(null, "Error: " + err.getMessage());
+                            JOptionPane.showMessageDialog(null, err.getMessage());
                         }
                 }
         } // end class 
@@ -320,9 +315,9 @@ public class OrderGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent event) 
                 {
-                    MainMenu menu = new MainMenu();
-                    menu.setVisible(true);
-                    dispose();
+                    MainMenu menu = new MainMenu(); //new menu object
+                    menu.setVisible(true);  //show menu
+                    dispose(); //close item gui 
                 }
         } // end class 
 
@@ -334,11 +329,11 @@ public class OrderGUI extends JFrame
             {
                 userIDField.setText("");
                 itemIDField.setText("");
-                orderTypeField.setText("");
+                orderTypeField.setText(""); //clears fields
                 orderDateField.setText("");
                 returnDateField.setText("");
 
-                orderTable.clearSelection();
+                orderTable.clearSelection(); // unclicks row
             }
         }
 

@@ -138,6 +138,7 @@ public class OrderCRUD {
         Connection connection = null;
         PreparedStatement pstat = null;
         ResultSet resultSet = null;
+        int orderID;
         int userId;
         int itemId;
         String orderType;
@@ -153,13 +154,14 @@ public class OrderCRUD {
                 
                 while(resultSet.next())
                     {
+                        orderID = resultSet.getInt("orderID");
                         userId = resultSet.getInt("userID");
                         itemId = resultSet.getInt("itemID");
                         orderType = resultSet.getString("orderType");
                         orderDate = resultSet.getString("orderDate");
                         returnDate = resultSet.getString("returnDate");
 
-                        Order order = new Order(userId, itemId, orderType, orderDate, returnDate);
+                        Order order = new Order(orderID, userId, itemId, orderType, orderDate, returnDate);
                         orders.add(order);
                     }
                     

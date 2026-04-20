@@ -18,12 +18,17 @@ public class MainMenu extends JFrame //window
     {
         //window details - text shown, size of window, layout
         super("Library System Menu");
-        setSize(300, 300);
+        setSize(700, 500);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exit when click the x 
-        setLayout(new GridLayout(3, 1)); // used instead of flow so they would stack
+        setLayout(new GridLayout(3, 1, 20, 5)); // used instead of flow so they would stack
         //JFrame.DISPOSE_ON_CLOSE - closes only window ur on
         setLocationRelativeTo(null);
+
+        ImageIcon icon = new ImageIcon(getClass().getResource("logo.png"));
+        setIconImage(icon.getImage());
         
+        //JLabel logo = new JLabel(new ImageIcon("logo.png"));
+        //add(logo, BorderLayout.NORTH);
         
 
         // make buttons

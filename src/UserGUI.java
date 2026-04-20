@@ -27,12 +27,15 @@ public class UserGUI extends JFrame
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close this window 
             setLayout(new BorderLayout()); //set layout
 
+            ImageIcon icon = new ImageIcon(getClass().getResource("logo.png"));
+            setIconImage(icon.getImage());
+
         
             userCRUD = new UserCRUD(); // Initialize crud object
 
             
             JPanel formPanel = new JPanel(); // form panel and layout
-            formPanel.setLayout(new GridLayout(3, 2, 5, 5)); // rows cols and spcaing 
+            formPanel.setLayout(new GridLayout(4, 2, 10, 10)); // rows cols and spcaing 
 
             //labels
             nameLabel = new JLabel("Name:"); 
@@ -103,11 +106,8 @@ public class UserGUI extends JFrame
             clearButton.addActionListener(clearHandler);
             
             displayUserTable(); //load data into table 
-
-            // show frame
             setLocationRelativeTo(null); // center window 
             setVisible(true); //shows
-
         } // end constructor
 
     // load users from db into table 
@@ -123,10 +123,7 @@ public class UserGUI extends JFrame
                             User user = users.get(i); //gets each one
                             tableModel.addRow(new Object[]  // add rows
                             {
-                                user.getUserID(), //col val
-                                user.getName(),
-                                user.getEmail(),
-                                user.getPhone()
+                                user.getUserID(), user.getName(), user.getEmail(), user.getPhone()
                             });
                         }
                 } 
@@ -204,6 +201,23 @@ public class UserGUI extends JFrame
             @Override
             public void actionPerformed(ActionEvent event) 
                 {
+                    String name = nameField.getText();
+                    String email = emailField.getText();
+                    String phone = phoneField.getText();
+
+                    // input validation
+                    if (name.isEmpty() || email.isEmpty() || phone.isEmpty()) //if any empty 
+                        {
+                            JOptionPane.showMessageDialog(null, "Fill all fields"); //print
+                            return; // back to gui screen
+                        }   
+                        
+                    if (!email.contains("@")) //if email does not contain @ enter if
+                        {
+                            JOptionPane.showMessageDialog(null, "Email must contain @");
+                            return;
+                        }
+
                     try 
                         {
                             int row = userTable.getSelectedRow(); //sel row 
@@ -216,11 +230,8 @@ public class UserGUI extends JFrame
                             
                             //get user data 
                             int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); 
-                            String name = nameField.getText();
-                            String email = emailField.getText();
-                            String phone = phoneField.getText();
-
                             User user = new User(id, name, email, phone); //make updated user
+                            
                             userCRUD.updateUser(user); //update db using crud 
                             displayUserTable(); //relaod table
                             JOptionPane.showMessageDialog(null, "User Updated"); // if works print 
@@ -256,11 +267,10 @@ public class UserGUI extends JFrame
                             int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); //get id 
                             
                             // Confirmation dialog
-                            int confirm = JOptionPane.showConfirmDialog(
-                                null, 
-                                "Are you sure you want to delete this user?", //messgae
-                                "Confirm Delete", //title 
-                                JOptionPane.YES_NO_OPTION //buttons
+                            int confirm = JOptionPane.showConfirmDialog(null, 
+                            "Are you sure you want to delete this user?", //messgae
+                            "Confirm Delete", //title 
+                            JOptionPane.YES_NO_OPTION //buttons
                             );
                             
                             if (confirm == JOptionPane.YES_OPTION) //if yes 
@@ -291,8 +301,6 @@ public class UserGUI extends JFrame
                     MainMenu menu = new MainMenu();
                     menu.setVisible(true);
                     dispose();
-                    //new MainMenu(); //if back clicked back to main menu 
-                    //dispose(); //close just current window 
                 }
         } // end class 
 
@@ -303,13 +311,11 @@ public class UserGUI extends JFrame
             public void actionPerformed(ActionEvent event) 
             {
                 nameField.setText("");
-                emailField.setText("");
+                emailField.setText("");  //clears fields
                 phoneField.setText("");
-
-                userTable.clearSelection();
+                userTable.clearSelection(); // unclicks row
             }
         }
-
 
     // main method - run gui from this class
     public static void main(String[] args) 
