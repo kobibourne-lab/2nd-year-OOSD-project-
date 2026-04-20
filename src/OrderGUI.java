@@ -180,7 +180,7 @@ public class OrderGUI extends JFrame
                     String returnDate = returnDateField.getText();
 
                     // input validation
-                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty()) //if any empty, except return date 
+                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty() || returnDate.isEmpty()) //if any empty, except return date 
                         {
                             JOptionPane.showMessageDialog(null, "Fill all fields"); //print
                             return; // back to gui screen
@@ -224,7 +224,7 @@ public class OrderGUI extends JFrame
                     String returnDate = returnDateField.getText();
                    
                     // input validation
-                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty()) //if any empty, except return date, for buy or tbd returns 
+                    if (userID.isEmpty() || itemID.isEmpty() || orderType.isEmpty() || orderDate.isEmpty() || returnDate.isEmpty()) //if any empty, except return date, for buy or tbd returns 
                         {
                             JOptionPane.showMessageDialog(null, "Fill all fields"); //print
                             return; // back to gui screen
