@@ -12,11 +12,13 @@ public class OrderGUI extends JFrame
 {
     // Component vars declarations
     private JLabel userIDLabel, itemIDLabel, orderTypeLabel, orderDateLabel, returnDateLabel; 
-    private JTextField userIDField, itemIDField, orderTypeField, orderDateField, returnDateField; 
+    private JTextField userIDField, itemIDField, orderDateField, returnDateField; 
+    private JComboBox<String> orderTypeCombo; // chaged from JTextField
     private JTable orderTable;
     private DefaultTableModel tableModel;
     private JButton addButton, updateButton, deleteButton, backButton, clearButton;
     private OrderCRUD orderCRUD; //object for crud
+
 
     // Constructor
     public OrderGUI() 
@@ -26,6 +28,8 @@ public class OrderGUI extends JFrame
             setSize(700, 500); // set window size
             setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE); //close this window 
             setLayout(new BorderLayout()); //set layout
+            
+            
 
             ImageIcon icon = new ImageIcon(getClass().getResource("logo.png"));
             setIconImage(icon.getImage());
@@ -35,7 +39,7 @@ public class OrderGUI extends JFrame
             
             JPanel formPanel = new JPanel(); // form panel and layout
             formPanel.setLayout(new GridLayout(5, 2, 5, 5)); // rows cols and spacing 
-
+            //formPanel.setBackground(Color.LIGHT_GRAY);
             //labels
             userIDLabel = new JLabel("User ID:"); 
             itemIDLabel = new JLabel("Item ID:");
@@ -46,7 +50,8 @@ public class OrderGUI extends JFrame
             //text fields
             userIDField = new JTextField(); 
             itemIDField = new JTextField();
-            orderTypeField = new JTextField();
+            //orderTypeField = new JTextField();
+            orderTypeCombo = new JComboBox<>(new String[]{"Long", "Short"});
             orderDateField = new JTextField();
             returnDateField = new JTextField();
 
@@ -56,11 +61,15 @@ public class OrderGUI extends JFrame
             formPanel.add(itemIDLabel);
             formPanel.add(itemIDField);
             formPanel.add(orderTypeLabel);
-            formPanel.add(orderTypeField);
+            //formPanel.add(orderTypeField); // get rid
+            formPanel.add(orderTypeCombo);
             formPanel.add(orderDateLabel);
             formPanel.add(orderDateField);
-            formPanel.add(returnDateLabel);
+            formPanel.add(returnDateLabel);             
             formPanel.add(returnDateField);
+            
+
+            
 
             
             JPanel buttonPanel = new JPanel(); // button panel 
@@ -82,8 +91,8 @@ public class OrderGUI extends JFrame
             // table setup 
             tableModel = new DefaultTableModel(); //makes table
             tableModel.addColumn("Order ID"); // id col 
-            tableModel.addColumn("User ID");
-            tableModel.addColumn("Item ID");
+            tableModel.addColumn("User Name");
+            tableModel.addColumn("Item Title");
             tableModel.addColumn("Order Type");
             tableModel.addColumn("Order Date");
             tableModel.addColumn("Return Date");
@@ -96,7 +105,9 @@ public class OrderGUI extends JFrame
             add(scrollPane, BorderLayout.CENTER); //add table in center 
             add(buttonPanel, BorderLayout.SOUTH); // add button at bottom
 
-            
+            Color bg = new Color(220, 235, 245); // make color 
+            formPanel.setBackground(bg); // set form panel colour
+            buttonPanel.setBackground(bg); // set button panel colour
         
             // make + reg event handlers
             ClickHandler clickHandler = new ClickHandler();
@@ -123,7 +134,9 @@ public class OrderGUI extends JFrame
     public void displayOrderTable() 
         {
             try 
-                {
+                {//might get rid of 2 lines 
+                    tableModel.setColumnIdentifiers(new String[]{
+                    "Order ID", "User Name", "Item Title", "Type", "Order Date", "Return Date" });
                     tableModel.setRowCount(0); //clear 
                     List<Order> orders = orderCRUD.displayOrders(); //get orders from db 
 
@@ -132,7 +145,7 @@ public class OrderGUI extends JFrame
                             Order order = orders.get(i); //gets each one
                             tableModel.addRow(new Object[]  // add rows
                             {   //col val
-                                order.getOrderID(), order.getUserID(), order.getItemID(),
+                                order.getOrderID(), order.getUserName(), order.getItemTitle(),
                                 order.getOrderType(), order.getOrderDate(), order.getReturnDate()
                             });
                         }
@@ -143,7 +156,7 @@ public class OrderGUI extends JFrame
                 }
         }
 
- 
+    private Order selectedOrder = null;
     // event handling classes
     //Table Click Handler
     private class ClickHandler extends MouseAdapter 
@@ -154,14 +167,22 @@ public class OrderGUI extends JFrame
                     int row = orderTable.getSelectedRow(); //gets selected row 
                     if (row != -1)  // Check valid row selected
                         {
-                            //fill fields 
-                            userIDField.setText(tableModel.getValueAt(row, 1).toString());
-                            itemIDField.setText(tableModel.getValueAt(row, 2).toString());
-                            orderTypeField.setText(tableModel.getValueAt(row, 3).toString());
-                            orderDateField.setText(tableModel.getValueAt(row, 4).toString());
-                            //returnDateField.setText(tableModel.getValueAt(row, 5).toString()); - throws error if empty 
-                            returnDateField.setText(String.valueOf(tableModel.getValueAt(row, 5)));
-                            
+                            try 
+                                {
+                                    List<Order> orders = orderCRUD.displayOrders();
+                                    selectedOrder = orders.get(row);
+                                    
+                                    // Populate fields with IDs (not names)
+                                    userIDField.setText(String.valueOf(selectedOrder.getUserID()));
+                                    itemIDField.setText(String.valueOf(selectedOrder.getItemID()));
+                                    orderTypeCombo.setSelectedItem(selectedOrder.getOrderType());
+                                    orderDateField.setText(selectedOrder.getOrderDate());
+                                    returnDateField.setText(selectedOrder.getReturnDate());
+                                } 
+                            catch (Exception e) 
+                                {
+                                    JOptionPane.showMessageDialog(null, e.getMessage());
+                                }
                         }
                 }
         } // end class
@@ -175,7 +196,8 @@ public class OrderGUI extends JFrame
                     //get inputs
                     String userID = userIDField.getText(); 
                     String itemID = itemIDField.getText();
-                    String orderType = orderTypeField.getText();
+                    //String orderType = orderTypeField.getText();
+                    String orderType = orderTypeCombo.getSelectedItem().toString();
                     String orderDate = orderDateField.getText();
                     String returnDate = returnDateField.getText();
 
@@ -186,10 +208,31 @@ public class OrderGUI extends JFrame
                             return; // back to gui screen
                         }
 
+                    if (!orderDate.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "dates can't contain letters");
+                            return;
+                        }
+
+                    if (!returnDate.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "dates can't contain letters");
+                            return;
+                        }
+
+
                     try 
                         {
                             int userIDInt = Integer.parseInt(userID); //convert to int
                             int itemIDInt = Integer.parseInt(itemID); //convert to int
+                            
+                             if (orderCRUD.isDupOrder(userIDInt, itemIDInt)) 
+                                {
+                                    JOptionPane.showMessageDialog(null, "This user already has an active order for this item!", 
+                                    "Duplicate Order", JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                }
+                            
                             Order order = new Order(userIDInt, itemIDInt, orderType, orderDate, returnDate); //create order object
                             
                             orderCRUD.insertOrder(order); // add to db
@@ -199,7 +242,8 @@ public class OrderGUI extends JFrame
                             // Clear fields
                             userIDField.setText("");
                             itemIDField.setText("");
-                            orderTypeField.setText("");
+                            orderTypeCombo.setSelectedIndex(0); // reset dropdown to first option
+                            //orderTypeField.setText("");
                             orderDateField.setText("");
                             returnDateField.setText("");
                         } 
@@ -219,7 +263,8 @@ public class OrderGUI extends JFrame
                 {
                     String userID = userIDField.getText();
                     String itemID = itemIDField.getText();
-                    String orderType = orderTypeField.getText();
+                    //String orderType = orderTypeField.getText();
+                    String orderType = orderTypeCombo.getSelectedItem().toString();
                     String orderDate = orderDateField.getText();
                     String returnDate = returnDateField.getText();
                    
@@ -229,6 +274,19 @@ public class OrderGUI extends JFrame
                             JOptionPane.showMessageDialog(null, "Fill all fields"); //print
                             return; // back to gui screen
                         }
+
+                    if (!orderDate.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "dates can't contain letters");
+                            return;
+                        }
+
+                    if (!returnDate.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "dates can't contain letters");
+                            return;
+                        }
+
                     try 
                         {
                             int row = orderTable.getSelectedRow(); //sel row 
@@ -252,7 +310,8 @@ public class OrderGUI extends JFrame
                             // Clear fields
                             userIDField.setText("");
                             itemIDField.setText("");
-                            orderTypeField.setText("");
+                            orderTypeCombo.setSelectedIndex(0); // reset dropdown to first option
+                            //orderTypeField.setText("");
                             orderDateField.setText("");
                             returnDateField.setText("");
                         } 
@@ -279,8 +338,8 @@ public class OrderGUI extends JFrame
                                     return; // stop (back to selecting)
                                 }
 
-                            int orderID = Integer.parseInt(tableModel.getValueAt(row, 0).toString()); //get id 
-                            
+                            int orderID = selectedOrder.getOrderID();
+                            int itemID = selectedOrder.getItemID();
                             // Confirmation dialog
                                 int confirm = JOptionPane.showConfirmDialog(null, 
                                 "Are you sure you want to delete this order?", //message
@@ -290,14 +349,17 @@ public class OrderGUI extends JFrame
                             
                             if (confirm == JOptionPane.YES_OPTION) //if yes 
                                 {
-                                    orderCRUD.deleteOrder(orderID);//delete order from db
+                                    //orderCRUD.deleteOrder(orderID);//delete order from db
+                                    //int itemID = Integer.parseInt(tableModel.getValueAt(row, 2).toString()); 
+                                    orderCRUD.deleteOrder(orderID, itemID);
                                     displayOrderTable(); // reload table 
                                     JOptionPane.showMessageDialog(null, "Order Deleted"); // print 
                                     
                                     // Clear fields
                                     userIDField.setText("");
                                     itemIDField.setText("");
-                                    orderTypeField.setText("");
+                                    orderTypeCombo.setSelectedIndex(0); // reset dropdown to first option
+                                    //orderTypeField.setText("");
                                     orderDateField.setText("");
                                     returnDateField.setText("");
                                 }
@@ -329,7 +391,8 @@ public class OrderGUI extends JFrame
             {
                 userIDField.setText("");
                 itemIDField.setText("");
-                orderTypeField.setText(""); //clears fields
+                orderTypeCombo.setSelectedIndex(0); // reset dropdown to first option
+                //orderTypeField.setText(""); //clears fields
                 orderDateField.setText("");
                 returnDateField.setText("");
 

@@ -87,7 +87,9 @@ public class UserGUI extends JFrame
             add(scrollPane, BorderLayout.CENTER); //add table in top 
             add(buttonPanel, BorderLayout.SOUTH); // add button at bottom
 
-            
+            Color bg = new Color(220, 235, 245); // make color 
+            formPanel.setBackground(bg); // set form panel colour
+            buttonPanel.setBackground(bg); // set button panel colour
         
             // make + reg event handlers
             ClickHandler clickHandler = new ClickHandler();
@@ -176,6 +178,26 @@ public class UserGUI extends JFrame
                             return;
                         }
 
+                    if (name.matches(".*\\d.*")) //no digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "name can't contain numbers");
+                            return;
+                        }
+
+                    if (!phone.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            return;
+                        }
+
+                    if (userCRUD.isDupUser(email)) 
+                        {
+                            JOptionPane.showMessageDialog(null, "A user with this email already exists!", 
+                            "Duplicate User", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    
+
                     try 
                         {
                             User user = new User(name, email, phone); //create user object
@@ -217,6 +239,26 @@ public class UserGUI extends JFrame
                             JOptionPane.showMessageDialog(null, "Email must contain @");
                             return;
                         }
+
+                    if (name.matches(".*\\d.*")) //no digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "name can't contain numbers");
+                            return;
+                        }
+
+                    if (!phone.matches(".*\\d.*")) //no digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            return;
+                        }
+
+                    if (userCRUD.isDupUser(email)) 
+                        {
+                            JOptionPane.showMessageDialog(null, "A user with this email already exists!", 
+                            "Duplicate User", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
 
                     try 
                         {

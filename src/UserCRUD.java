@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-//import java.sql.ResultSetMetaData; need to add throw for every throws?
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -96,38 +95,26 @@ public void insertUser(User user) throws SQLException
     }
 
      // Delete an item
-    public void deleteUser(int userID) throws Exception
-    {
-        Connection connection = null;
-        PreparedStatement pstat = null;
+    public void deleteUser(int userID) {
+    try {
+        Connection connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
 
-        try 
-            {
-                connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
-                pstat = connection.prepareStatement("DELETE FROM users WHERE userID=?");
-                pstat.setInt(1, userID);
+        // 1. delete child records first
+        PreparedStatement p1 = connection.prepareStatement(
+            "DELETE FROM orders WHERE userID=?");
+        p1.setInt(1, userID);
+        p1.executeUpdate();
 
-                int rowsDeleted = pstat.executeUpdate();
-                System.out.println(rowsDeleted + " record(s) successfully removed from the table.");
+        // 2. delete user
+        PreparedStatement p2 = connection.prepareStatement(
+            "DELETE FROM users WHERE userID=?");
+        p2.setInt(1, userID);
+        p2.executeUpdate();
 
-            } 
-        catch (SQLException e) 
-            {
-                e.printStackTrace();
-            } 
-        finally 
-        {
-            try 
-                {
-                    if (pstat != null) pstat.close();
-                    if (connection != null) connection.close();
-                } 
-            catch (Exception e) 
-                {
-                   e.printStackTrace();
-                }
-        }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+}
 
     public List<User> displayUsers() throws Exception
     {
@@ -158,26 +145,6 @@ public void insertUser(User user) throws SQLException
                     users.add(user);
                 }
 
-                /*ResultSetMetaData metaData = resultSet.getMetaData();
-                int numberOfColumns = metaData.getColumnCount();
-
-                // Print column headers
-                for (int i = 1; i <= numberOfColumns; i++) 
-                    {
-                        System.out.print(metaData.getColumnName(i) + "  \t  ");
-                    }
-                System.out.println();
-
-                // Print rows
-                while (resultSet.next()) 
-                    {
-                        for (int i = 1; i <= numberOfColumns; i++) 
-                            {
-                                System.out.print(resultSet.getObject(i) + "\t");
-                            }
-                        System.out.println();
-                    }*/
-
             } 
         catch (SQLException e) 
             {
@@ -196,22 +163,55 @@ public void insertUser(User user) throws SQLException
                         e.printStackTrace();
                     }
             }
-            return users;
+        return users;
     }
 
+
+    public boolean isDupUser(String email) 
+    {
+        Connection connection = null;
+        PreparedStatement pstat = null;
+        ResultSet resultSet = null;
+
+        try 
+            {
+                connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
+                pstat = connection.prepareStatement("SELECT COUNT(*) FROM users WHERE email = ?");
+                pstat.setString(1, email);
+                resultSet = pstat.executeQuery();
+
+                if (resultSet.next()) 
+                    {
+                        return resultSet.getInt(1) > 0;
+                    }
+            } 
+        catch (SQLException e) 
+            {
+                e.printStackTrace();
+            } 
+        finally 
+            {
+                
+                try 
+                    {
+                        if (resultSet != null) resultSet.close();
+                        if (pstat != null) pstat.close();
+                        if (connection != null) connection.close();
+                    } 
+                catch (Exception e) 
+                    {
+                        e.printStackTrace();
+                    }
+            }
+        return false;
+    }
     // Main method for testing
     public void main(String[] args) 
     {
-        
-
     //User newUser = new User();
     //UserCRUD.insertUser(newUser);
-
-    // UPDATE
     //User updatedUser = new User(name, email, phone);
     //USERCRUD.updateUser(updatedUser);
-
-    // DELETE
     //UserCRUD.deleteUser(1);
     //displayUsers();
     }

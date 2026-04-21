@@ -50,6 +50,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "UserCRUD",
+      "request": "launch",
+      "mainClass": "UserCRUD",
+      "projectName": "2nd-year-OOSD-project-_945c0d2f"
+    },
+    {
+      "type": "java",
       "name": "ItemGUI",
       "request": "launch",
       "mainClass": "ItemGUI",

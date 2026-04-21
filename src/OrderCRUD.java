@@ -3,11 +3,9 @@
 //CLASS: CRUD FOR ORDER 
 //DATE: 28/2/2026
 import java.sql.Connection;
-//import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-//import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +34,7 @@ public class OrderCRUD {
                 pstat.setString(5, order.getReturnDate());
 
                 int rowsInserted = pstat.executeUpdate();
+                new ItemCRUD().decStock(order.getItemID());
                 System.out.println(rowsInserted + " record(s) successfully added to the table.");
 
             }
@@ -98,18 +97,20 @@ public class OrderCRUD {
     }
 
     // Delete an order
-    public void deleteOrder(int orderID) throws SQLException
+    public void deleteOrder(int orderID, int itemID) throws SQLException
     {
         Connection connection = null;
         PreparedStatement pstat = null;
 
         try 
             {
+                new ItemCRUD().addStock(itemID);
                 connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
                 pstat = connection.prepareStatement("DELETE FROM orders WHERE orderID=?");
                 pstat.setInt(1, orderID);
 
                 int rowsDeleted = pstat.executeUpdate();
+                
                 System.out.println(rowsDeleted + " record(s) successfully removed from the table.");
 
             } 
@@ -148,8 +149,9 @@ public class OrderCRUD {
         try 
             {
                 connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
+                //added names so inner join info printed
                 pstat = connection.prepareStatement(
-                    "SELECT orders.orderID, users.userID, items.itemID, orders.orderType, orders.orderDate, orders.returnDate " +
+                    "SELECT orders.orderID, users.userID, users.name,  items.itemID, items.title, orders.orderType, orders.orderDate, orders.returnDate " +
                     "FROM orders " +
                     "INNER JOIN users ON orders.userID = users.userID " + 
                     "INNER JOIN items ON orders.itemID = items.itemID;");
@@ -160,12 +162,14 @@ public class OrderCRUD {
                     {
                         orderID = resultSet.getInt("orderID");
                         userId = resultSet.getInt("userID");
+                        String userName = resultSet.getString("name"); 
                         itemId = resultSet.getInt("itemID");
+                        String itemTitle = resultSet.getString("title");
                         orderType = resultSet.getString("orderType");
                         orderDate = resultSet.getString("orderDate");
                         returnDate = resultSet.getString("returnDate");
 
-                        Order order = new Order(orderID, userId, itemId, orderType, orderDate, returnDate);
+                        Order order = new Order(orderID, userId, userName, itemId, itemTitle, orderType, orderDate, returnDate);
                         orders.add(order);
                     }
                     
@@ -209,6 +213,47 @@ public class OrderCRUD {
                     }
             }
             return orders;
+    }
+
+    // Check if order already exists
+    public boolean isDupOrder(int userID, int itemID) 
+    {
+        Connection connection = null;
+        PreparedStatement pstat = null;
+        ResultSet resultSet = null;
+
+        try 
+            {
+                connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
+                pstat = connection.prepareStatement(
+                    "SELECT COUNT(*) FROM orders WHERE userID = ? AND itemID = ?");
+                pstat.setInt(1, userID);
+                pstat.setInt(2, itemID);
+                resultSet = pstat.executeQuery();
+
+                if (resultSet.next()) 
+                    {
+                        return resultSet.getInt(1) > 0; // Returns true if duplicate exists
+                    }
+            } 
+        catch (SQLException e) 
+            {
+            e.printStackTrace();
+            } 
+        finally 
+            {
+                try 
+                    {
+                        if (resultSet != null) resultSet.close();
+                        if (pstat != null) pstat.close();
+                        if (connection != null) connection.close();
+                    } 
+                catch (Exception e) 
+                    {
+                        e.printStackTrace();
+                    }
+            }
+        return false;
     }
 
     // Main method for testing

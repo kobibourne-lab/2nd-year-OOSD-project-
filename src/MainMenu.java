@@ -29,7 +29,8 @@ public class MainMenu extends JFrame //window
         
         //JLabel logo = new JLabel(new ImageIcon("logo.png"));
         //add(logo, BorderLayout.NORTH);
-        
+        Color bg = new Color(220, 235, 245); // make color 
+        getContentPane().setBackground(bg);
 
         // make buttons
         itemButton = new JButton("Manage Items"); //button + text on button
@@ -52,6 +53,7 @@ public class MainMenu extends JFrame //window
         itemButton.addActionListener(itemHandler);
         userButton.addActionListener(userHandler);
         orderButton.addActionListener(orderHandler);
+        
         
     } //end con
 

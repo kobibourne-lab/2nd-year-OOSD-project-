@@ -11,6 +11,8 @@ public class Order
     private String orderType;
     private String orderDate;
     private String returnDate;
+    private String userName;  //for inner join display
+    private String itemTitle;
 
     public Order(int userID, int itemID, String orderType, String orderDate, String returnDate) 
     {
@@ -26,6 +28,20 @@ public class Order
         this.orderID = orderID;
         this.userID = userID;
         this.itemID = itemID;
+        this.orderType = orderType;
+        this.orderDate = orderDate;
+        this.returnDate = returnDate;
+    }
+
+    
+    public Order(int orderID, int userID, String userName, int itemID, String itemTitle,
+                 String orderType, String orderDate, String returnDate) 
+    {
+        this.orderID = orderID;
+        this.userID = userID;
+        this.userName = userName;    // 
+        this.itemID = itemID;
+        this.itemTitle = itemTitle;  //
         this.orderType = orderType;
         this.orderDate = orderDate;
         this.returnDate = returnDate;
@@ -91,6 +107,16 @@ public class Order
         this.returnDate = returnDate;
     }
 
+    public String getUserName() 
+    { 
+        return userName; 
+    }
+    public String getItemTitle() 
+    { 
+        return itemTitle; 
+    }
+
+
     @Override
     public String toString() 
     {
@@ -98,8 +124,4 @@ public class Order
         + ", returnDate=" + returnDate + "]";
     }
 
-    
-    
-
-    
 }

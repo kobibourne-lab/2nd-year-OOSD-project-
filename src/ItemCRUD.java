@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-//import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -198,11 +197,6 @@ public void insertItem(Item item) throws Exception
                                 items.add(item);
                             }
                     }
-
-            
-
-                
-
             } 
         catch (SQLException e) 
             {
@@ -223,6 +217,113 @@ public void insertItem(Item item) throws Exception
             }
             return items;
     }
+
+
+    public void decStock(int itemID)
+        {
+            Connection connection = null;
+            PreparedStatement pstat = null;
+
+            try
+                {
+                    connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
+
+                    pstat = connection.prepareStatement("UPDATE items SET stock = stock - 1 WHERE itemID = ? AND stock > 0");
+
+                    pstat.setInt(1, itemID);
+
+                    pstat.executeUpdate();
+                }
+            catch (SQLException e)
+                {
+                    e.printStackTrace();
+                }
+            finally
+                {
+                    try
+                    {
+                        if (pstat != null) pstat.close();
+                        if (connection != null) connection.close();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+        }
+    
+
+    public void addStock(int itemID) //method to add 1 to stock when order made 
+        {
+            Connection connection = null;
+            PreparedStatement pstat = null;
+
+            try
+                {
+                    connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
+
+                    pstat = connection.prepareStatement("UPDATE items SET stock = stock + 1 WHERE itemID = ?");
+
+                    pstat.setInt(1, itemID);
+
+                    pstat.executeUpdate();
+                }
+            catch (SQLException e)
+                {
+                    e.printStackTrace();
+                }
+            finally
+                {
+                    try
+                        {
+                            if (pstat != null) pstat.close();
+                            if (connection != null) connection.close();
+                        }
+                    catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                }
+        }
+
+
+        public boolean isDupItem(String title) 
+        {
+            Connection connection = null;
+            PreparedStatement pstat = null;
+            ResultSet resultSet = null;
+
+            try 
+                {
+                    connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
+                    pstat = connection.prepareStatement("SELECT COUNT(*) FROM items WHERE title = ?");
+                    pstat.setString(1, title);
+                    resultSet = pstat.executeQuery();
+
+                    if (resultSet.next()) 
+                        {
+                            return resultSet.getInt(1) > 0;
+                        }
+                } 
+            catch (SQLException e) 
+                {
+                    e.printStackTrace();
+                } 
+            finally 
+                {
+                   try 
+                    {
+                        if (resultSet != null) resultSet.close();
+                        if (pstat != null) pstat.close();
+                        if (connection != null) connection.close();
+                    } 
+                catch (Exception e) 
+                    {
+                        e.printStackTrace();
+                    } 
+                }
+            return false;
+        }
 
     // Main method for testing
     public static void main(String[] args) 

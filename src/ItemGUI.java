@@ -102,6 +102,10 @@ public class ItemGUI extends JFrame
             add(scrollPane, BorderLayout.CENTER); //add table in center 
             add(buttonPanel, BorderLayout.SOUTH); // add button at bottom
 
+            Color bg = new Color(220, 235, 245); // make color 
+            formPanel.setBackground(bg); // set form panel colour
+            buttonPanel.setBackground(bg); // set button panel colour
+
             // make + reg event handlers            
             ClickHandler clickHandler = new ClickHandler();
             AddHandler addHandler = new AddHandler();
@@ -202,6 +206,28 @@ public class ItemGUI extends JFrame
                             return; //back to gui 
                         }
 
+                    if (!price.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            return;
+                        }
+                    if (!rental.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            return;
+                        } 
+                    if (!stock.matches(".*\\d.*")) //noly digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            return;
+                        } 
+                    if (itemCRUD.isDupItem(title)) 
+                        {
+                            JOptionPane.showMessageDialog(null,"An item with this title already exists!", 
+                            "Duplicate Item", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                    
                     try 
                         {
                             double priceVal = Double.parseDouble(price); //convert to double 
@@ -254,6 +280,28 @@ public class ItemGUI extends JFrame
                         {
                             JOptionPane.showMessageDialog(null, "Fill all fields"); 
                             return; //back to gui 
+                        }
+
+                    if (!price.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            return;
+                        }
+                    if (!rental.matches(".*\\d.*")) //only digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            return;
+                        } 
+                    if (!stock.matches(".*\\d.*")) //noly digits from 0-9
+                        {
+                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            return;
+                        } 
+                    if (itemCRUD.isDupItem(title)) 
+                        {
+                            JOptionPane.showMessageDialog(null,"An item with this title already exists!", 
+                            "Duplicate Item", JOptionPane.ERROR_MESSAGE);
+                            return;
                         }
 
                     try 
@@ -359,6 +407,9 @@ public class ItemGUI extends JFrame
                 itemTable.clearSelection();// unclicks row
             }
         }
+
+    
+    
 
     // main method - run gui from this class
     public static void main(String[] args) 
