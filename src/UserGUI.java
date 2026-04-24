@@ -252,13 +252,6 @@ public class UserGUI extends JFrame
                             return;
                         }
 
-                    if (userCRUD.isDupUser(email)) 
-                        {
-                            JOptionPane.showMessageDialog(null, "A user with this email already exists!", 
-                            "Duplicate User", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
-
 
                     try 
                         {

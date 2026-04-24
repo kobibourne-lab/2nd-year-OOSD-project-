@@ -94,27 +94,29 @@ public void insertUser(User user) throws SQLException
 
     }
 
-     // Delete an item
-    public void deleteUser(int userID) {
-    try {
-        Connection connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
+     // Delete a user
+    public void deleteUser(int userID) 
+    {
+        try 
+            {
+                Connection connection = DriverManager.getConnection(DATABASE_URL, USERNAME, PASSWORD);
 
-        // 1. delete child records first
-        PreparedStatement p1 = connection.prepareStatement(
-            "DELETE FROM orders WHERE userID=?");
-        p1.setInt(1, userID);
-        p1.executeUpdate();
+                // delete order first
+                PreparedStatement pstat1 = connection.prepareStatement("DELETE FROM orders WHERE userID=?");
+                pstat1.setInt(1, userID);
+                pstat1.executeUpdate();
 
-        // 2. delete user
-        PreparedStatement p2 = connection.prepareStatement(
-            "DELETE FROM users WHERE userID=?");
-        p2.setInt(1, userID);
-        p2.executeUpdate();
+                //delete user after orders using userID 
+                PreparedStatement pstat2 = connection.prepareStatement( "DELETE FROM users WHERE userID=?");
+                pstat2.setInt(1, userID);
+                pstat2.executeUpdate();
 
-    } catch (Exception e) {
-        e.printStackTrace();
+            } 
+        catch (Exception e) 
+            {
+                e.printStackTrace();
+            }
     }
-}
 
     public List<User> displayUsers() throws Exception
     {

@@ -208,17 +208,17 @@ public class ItemGUI extends JFrame
 
                     if (!price.matches(".*\\d.*")) //only digits from 0-9
                         {
-                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            JOptionPane.showMessageDialog(null, "price can't contain letters");
                             return;
                         }
                     if (!rental.matches(".*\\d.*")) //only digits from 0-9
                         {
-                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            JOptionPane.showMessageDialog(null, "rental price can't contain letters");
                             return;
                         } 
                     if (!stock.matches(".*\\d.*")) //noly digits from 0-9
                         {
-                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            JOptionPane.showMessageDialog(null, "stock can't contain letters");
                             return;
                         } 
                     if (itemCRUD.isDupItem(title)) 
@@ -284,25 +284,19 @@ public class ItemGUI extends JFrame
 
                     if (!price.matches(".*\\d.*")) //only digits from 0-9
                         {
-                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            JOptionPane.showMessageDialog(null, "price can't contain letters");
                             return;
                         }
                     if (!rental.matches(".*\\d.*")) //only digits from 0-9
                         {
-                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            JOptionPane.showMessageDialog(null, "rental price can't contain letters");
                             return;
                         } 
                     if (!stock.matches(".*\\d.*")) //noly digits from 0-9
                         {
-                            JOptionPane.showMessageDialog(null, "phone can't contain letters");
+                            JOptionPane.showMessageDialog(null, "stock can't contain letters");
                             return;
                         } 
-                    if (itemCRUD.isDupItem(title)) 
-                        {
-                            JOptionPane.showMessageDialog(null,"An item with this title already exists!", 
-                            "Duplicate Item", JOptionPane.ERROR_MESSAGE);
-                            return;
-                        }
 
                     try 
                         {
